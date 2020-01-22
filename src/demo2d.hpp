@@ -28,6 +28,7 @@
 #include <demo2dPoint.hpp>
 #include <demo2dCV.hpp>
 #include <demo2dSample.hpp>
+#include <demo2dUtils.hpp>
 
 /**
 

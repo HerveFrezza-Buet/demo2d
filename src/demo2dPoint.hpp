@@ -30,6 +30,7 @@
 #include <random>
 #include <optional>
 #include <utility>
+#include <iostream>
 
 namespace demo2d {
 
