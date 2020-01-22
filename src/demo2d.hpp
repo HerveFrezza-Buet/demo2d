@@ -27,6 +27,7 @@
 
 #include <demo2dPoint.hpp>
 #include <demo2dCV.hpp>
+#include <demo2dDynamic.hpp>
 #include <demo2dSample.hpp>
 #include <demo2dUtils.hpp>
 
@@ -42,4 +43,8 @@
 /**
    @example example-000-001-opencv-basics.cpp
    @example example-000-001-opencv-frames.cpp
+   @example example-001-001-sampling-basics.cpp
+   @example example-001-002-dynamic-distribution.cpp
+   @example example-001-003-video-distribution.cpp
+   @example example-001-004-base-samplers.cpp
 */

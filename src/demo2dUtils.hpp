@@ -29,7 +29,7 @@
 #include <iomanip>
 #include <string>
 
-namespace demo2d {
+namespace demo {
   class irange {
   private:
     int first, last, step;

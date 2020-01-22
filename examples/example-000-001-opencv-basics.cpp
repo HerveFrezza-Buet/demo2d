@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
   
   // Here, let us save the image several times, with names like
   // "img-000054.png". This is what the videoframe_name class offers.
-  auto filename = demo2d::videoframe_name("img", "png");
+  auto filename = demo::videoframe_name("img", "png");
 
   // Let us display the result.
   cv::namedWindow("image", CV_WINDOW_AUTOSIZE);
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
 												    demo2d::Point(x, .3*std::sin(15*x)));},
   							[&color_a](double x) {return color_a;},
   							[]        (double x) {return 1;});
-  auto abscissas = demo2d::range(-.5, .5, 100);
+  auto abscissas = demo::range(-.5, .5, 100);
   std::copy(abscissas.begin(), abscissas.end(), dd);
 
   cv::imwrite(filename(), image); // writes img-000038.png
