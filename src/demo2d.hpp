@@ -40,5 +40,6 @@
 
 
 /**
-   @example toto.cpp
+   @example example-000-001-opencv-basics.cpp
+   @example example-000-001-opencv-frames.cpp
 */
