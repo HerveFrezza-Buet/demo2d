@@ -60,7 +60,7 @@ namespace demo2d {
       int hsv_thickness;
       int stride;
 	
-      void check_line(int rows, int cols) {
+      void check_line(int cols) {
 	if(cols == hsv_line.cols)
 	  return;
 
@@ -123,7 +123,7 @@ namespace demo2d {
       }
 
       void build_image(cv::Mat img) {
-	check_line(img.rows, img.cols);
+	check_line(img.cols);
 	image.create(img.rows, img.cols, CV_8UC3);
 	cv::cvtColor(img, hsv, CV_BGR2HSV);
 	  

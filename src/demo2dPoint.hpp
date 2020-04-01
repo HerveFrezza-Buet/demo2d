@@ -137,7 +137,7 @@ namespace demo2d {
       return *this;
     }
 
-    Point transpose(const Point& p) {
+    Point transpose() {
       return {y, x};
     }
   };
