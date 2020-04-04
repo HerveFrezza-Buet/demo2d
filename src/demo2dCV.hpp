@@ -353,6 +353,20 @@ namespace demo2d {
 	x -= cv_center;
 	return {x*to_demo_xline, x*to_demo_yline};
       }
+
+      /**
+       * This converts a distance into an openCV length in
+       * pixels. This may return silly values if the frame is not
+       * orthogonal and normalized.
+       */
+      int operator()(double dist) const {
+	auto o = (*this)(demo2d::Point(0, 0));
+	auto m = (*this)(demo2d::Point(dist, 0));
+	int dx = o.x - m.x;
+	int dy = o.y - m.y;
+	return int(std::sqrt(dx*dx + dy*dy) + .5);
+      }
+      
     };
 
     /**
