@@ -140,6 +140,14 @@ namespace demo2d {
     Point transpose() {
       return {y, x};
     }
+
+    Point rotate_left() {
+      return {-y, x};
+    }
+
+    Point rotate_right() {
+      return {y, -x};
+    }
   };
 
   inline Point operator*(double a, const Point p) {
