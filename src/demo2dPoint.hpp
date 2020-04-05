@@ -137,16 +137,24 @@ namespace demo2d {
       return *this;
     }
 
-    Point transpose() {
+    Point transpose() const {
       return {y, x};
     }
 
-    Point rotate_left() {
+    Point rotate_left() const {
       return {-y, x};
     }
 
-    Point rotate_right() {
+    Point rotate_right() const {
       return {y, -x};
+    }
+
+    double norm2() const {
+      return x*x + y*y;
+    }
+    
+    double norm() const {
+      return std::sqrt(norm2());
     }
   };
 
