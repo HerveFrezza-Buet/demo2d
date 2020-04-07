@@ -31,6 +31,7 @@
 #include <optional>
 #include <utility>
 #include <iostream>
+#include <cmath>
 
 namespace demo2d {
 
@@ -71,6 +72,10 @@ namespace demo2d {
 
     Point operator-(const Point& p) const {
       return {x-p.x, y-p.y};
+    }
+
+    double angle() const {
+      return std::atan2(y, x);
     }
 
     /**
