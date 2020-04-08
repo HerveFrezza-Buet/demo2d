@@ -161,6 +161,10 @@ namespace demo2d {
     double norm() const {
       return std::sqrt(norm2());
     }
+
+    static Point unitary(double angle) {
+      return {std::cos(angle), std::sin(angle)};
+    }
   };
 
   inline Point operator*(double a, const Point p) {
