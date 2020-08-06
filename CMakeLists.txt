@@ -21,8 +21,8 @@ SET(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include/${CMAKE_PROJECT_NAME}/"
 ###################################
 
 find_package(PkgConfig)
-pkg_check_modules(OPENCV opencv REQUIRED)
 
+pkg_check_modules(OPENCV opencv REQUIRED)
 set(PKG_CONFIG_DEPENDS "opencv")
 
 
