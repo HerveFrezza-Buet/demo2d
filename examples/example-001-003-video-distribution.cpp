@@ -24,9 +24,9 @@ int main(int argc, char* argv[]) {
   auto input_size  = video_data.image.size();
   video_data.frame = demo2d::opencv::direct_orthonormal_frame(input_size, .5*input_size.width, true);
 
-  cv::namedWindow("webcam", CV_WINDOW_AUTOSIZE);
+  cv::namedWindow("webcam", cv::WINDOW_AUTOSIZE);
   
-  cv::namedWindow("image", CV_WINDOW_AUTOSIZE);
+  cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
   cv::createTrackbar("nb/m^2", "image", &N_slider, 50000, nullptr);
   cv::createTrackbar("threshold", "image", &T_slider, 255, nullptr);
   

@@ -74,7 +74,7 @@ namespace demo2d {
 	  *(it++) = 255;                                        // S
 	  *(it++) = 255;                                        // V
 	}
-	cv::cvtColor(hsv_line, hsv_line, CV_HSV2BGR);
+	cv::cvtColor(hsv_line, hsv_line, cv::COLOR_HSV2BGR);
 	stride = cols*3;
 	hsv_thickness = std::min(cols, 20);
       }
@@ -110,7 +110,7 @@ namespace demo2d {
 	return [this](const unsigned char* rgb_pixel) {
 	  cv::Mat src(1, 1, CV_8UC3, (void*)rgb_pixel);
 	  cv::Mat dst;
-	  cv::cvtColor(src, dst, CV_BGR2HSV);
+	  cv::cvtColor(src, dst, cv::COLOR_BGR2HSV);
 	  return this->hsv_test(dst.data);
 	};
       }
@@ -125,7 +125,7 @@ namespace demo2d {
       void build_image(cv::Mat img) {
 	check_line(img.cols);
 	image.create(img.rows, img.cols, CV_8UC3);
-	cv::cvtColor(img, hsv, CV_BGR2HSV);
+	cv::cvtColor(img, hsv, cv::COLOR_BGR2HSV);
 	  
 	unsigned char* src = img.data;
 	unsigned char* dst = image.data;
@@ -632,8 +632,8 @@ namespace demo2d {
 	    ostr << "Cannot open video from device " << device << " (/dev/video" << device << ").";
 	    throw std::runtime_error(ostr.str());
 	  }
-	  image = cv::Mat((int)(cap.get(CV_CAP_PROP_FRAME_HEIGHT)),
-			  (int)(cap.get(CV_CAP_PROP_FRAME_WIDTH)),
+	  image = cv::Mat((int)(cap.get(cv::CAP_PROP_FRAME_HEIGHT)),
+			  (int)(cap.get(cv::CAP_PROP_FRAME_WIDTH)),
 			  CV_8UC3, cv::Scalar(255,255,255));
 	}
 

@@ -155,7 +155,7 @@ int main(int argc, char* argv[]) {
 		     
 
   for(auto& drawing : drawings) {
-    cv::namedWindow(drawing.title, CV_WINDOW_AUTOSIZE);
+    cv::namedWindow(drawing.title, cv::WINDOW_AUTOSIZE);
     cv::setMouseCallback(drawing.title, on_mouse, reinterpret_cast<void*>(&drawing));
   }
 

@@ -67,8 +67,8 @@ int main(int argc, char* argv[]) {
 								   [](const demo2d::Point& pt) {return cv::Scalar(250, 50, 50);},
 								   [](const demo2d::Point& pt) {return                      -1;});
 
-  cv::namedWindow("image", CV_WINDOW_AUTOSIZE);
-  cv::VideoWriter video("movie.avi", CV_FOURCC('D', 'I', 'V', 'X'), 25, image.size());
+  cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
+  cv::VideoWriter video("movie.avi", cv::VideoWriter::fourcc('D', 'I', 'V', 'X'), 25, image.size());
 
   std::cout << std::endl
 	    << "The window will close automatically after a while. Please wait." << std::endl

@@ -52,9 +52,9 @@ int main(int argc, char* argv[]) {
 								   [](const demo2d::Point& pt) {return cv::Scalar(250, 50, 50);},
 								   [](const demo2d::Point& pt) {return                      -1;});
 
-  cv::namedWindow("random",    CV_WINDOW_AUTOSIZE);
-  cv::namedWindow("grid",      CV_WINDOW_AUTOSIZE);
-  cv::namedWindow("triangles", CV_WINDOW_AUTOSIZE);
+  cv::namedWindow("random",    cv::WINDOW_AUTOSIZE);
+  cv::namedWindow("grid",      cv::WINDOW_AUTOSIZE);
+  cv::namedWindow("triangles", cv::WINDOW_AUTOSIZE);
   
   int keycode = 0;
  

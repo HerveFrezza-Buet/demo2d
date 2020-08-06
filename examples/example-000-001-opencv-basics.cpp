@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
   auto filename = demo::videoframe_name("img", "png");
 
   // Let us display the result.
-  cv::namedWindow("image", CV_WINDOW_AUTOSIZE);
+  cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
   
   cv::imwrite(filename(37), image); // writes img-000037.png
   cv::imshow ("image",      image);

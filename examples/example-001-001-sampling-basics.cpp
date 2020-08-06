@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
 								   thickness_of);
   std::copy(SS.begin(), SS.end(), dd);
   
-  cv::namedWindow("image", CV_WINDOW_AUTOSIZE);
+  cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
   cv::imshow     ("image", image);
   cv::waitKey(0);
 
