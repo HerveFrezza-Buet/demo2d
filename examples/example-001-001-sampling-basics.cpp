@@ -17,6 +17,13 @@ int main(int argc, char* argv[]) {
   std::random_device rd;  
   std::mt19937 random_device(rd());
 
+  // WARNING : Here are parameters for distributions. They are
+  // provided to the constructors (as demo2d::sample::disk here) **by
+  // reference**, so they must live somewhere in a non expiring memory
+  // segment. When you writhe function that create densities, do not
+  // pass the arguments of the function to the density constructor,
+  // such expiring arguments will be taken by reference.
+
   double rect_width              = 0.5;
   double rect_height             = 0.4;
   double rect_intensity          = 1.0;

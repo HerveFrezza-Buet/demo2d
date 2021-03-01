@@ -12,7 +12,9 @@ int main(int argc, char* argv[]) {
   std::random_device rd;  
   std::mt19937 random_device(rd());
 
-  // Parameters for shapes.
+  // Parameters for shapes.  WARNING : this cannot be expiring, since
+  // it provides references for building up densities. See warning in
+  // example 001-001.
   
   auto variable_intensity          = demo::dyn::sin(0, 1, -90, 1);
   auto line_pos                    = demo::dyn::linear<demo::dyn::bound::bounce>(0, -1, 1, .1);
