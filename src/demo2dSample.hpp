@@ -354,6 +354,8 @@ namespace demo2d {
 	}
       return value;
     }
+
+    
       
     template<typename RANDOM_ENGINE, typename BASE_SAMPLER>
     class SampleSet {
