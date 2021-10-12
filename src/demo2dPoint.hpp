@@ -31,6 +31,7 @@
 #include <optional>
 #include <utility>
 #include <iostream>
+#include <algorithm>
 #include <cmath>
 
 namespace demo2d {
@@ -254,4 +255,15 @@ namespace demo2d {
     return res;
   }
     
+  inline double d2(const Point& P, const std::pair<Point, Point>& S) {
+    auto& [A, B] = S;
+    if(A == B) return d2(P, A);
+    auto u = *(B - A);
+    auto H = u * ((P - A) * u) + A;
+    return std::min(std::min(d2(P, A), d2(P, B)), d2(P, H));
+  }
+  
+  inline double d(const Point& P, const std::pair<Point, Point>& S) {
+    return std::sqrt(d2(P, S));
+  }
 }
