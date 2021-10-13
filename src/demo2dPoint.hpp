@@ -255,15 +255,35 @@ namespace demo2d {
     return res;
   }
     
-  inline double d2(const Point& P, const std::pair<Point, Point>& S) {
+  inline double d2(const Point& M, const std::pair<Point, Point>& S) {
     auto& [A, B] = S;
-    if(A == B) return d2(P, A);
-    auto u = *(B - A);
-    auto H = u * ((P - A) * u) + A;
-    return std::min(std::min(d2(P, A), d2(P, B)), d2(P, H));
+    // std::cout << "#### M = " << M << ", A = " << A << ", B = " << B << std::endl
+    // 	      << "     (d displayed, but d2 is really computed)" << std::endl;
+    if(A == B) {
+      // std::cout << "---> A == B, return " << d(M, A) << std::endl;
+      return d2(M, A);
+    }
+    auto AB_ = B - A;
+    auto u   = *AB_;
+    auto AH = (M - A) * u;
+    // std::cout << "     AB_ = " << AB_ << ", u = " << u << ", AH = " << AH << std::endl;
+    if(AH < 0) {
+      // std::cout << "---> AH < 0, return " << d(M, A) << std::endl;
+      return d2(M, A);
+    }
+    auto AH_ = u * AH;
+    auto H   = A + AH_;
+    auto BH_ = H - B;
+    // std::cout << "     AH_ = " << AH_ << ", H = " << H << ", BH_ = " << BH_ << ", BH_ * u = " << BH_ * u << std::endl;
+    if(BH_ * u > 0) {
+      // std::cout << "---> BH_ * u > 0, return " << d(M, B) << std::endl;
+      return d2(M, B);
+    }
+    // std::cout << "---> BH_ * u <= 0, return " << d(M, H) << std::endl;
+    return d2(M, H);
   }
   
-  inline double d(const Point& P, const std::pair<Point, Point>& S) {
-    return std::sqrt(d2(P, S));
+  inline double d(const Point& M, const std::pair<Point, Point>& S) {
+    return std::sqrt(d2(M, S));
   }
 }
