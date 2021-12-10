@@ -33,6 +33,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace demo2d {
 
@@ -285,5 +286,31 @@ namespace demo2d {
   
   inline double d(const Point& M, const std::pair<Point, Point>& S) {
     return std::sqrt(d2(M, S));
+  }
+
+  /**
+   * This returns the distance between M and the segment S, but only
+   * if M lies in a rectange of which S is a median. It returns
+   * infinity otherwise.
+   */
+  inline double cylinder_d2(const Point& M, const std::pair<Point, Point>& S) {
+    auto& [A, B] = S;
+    if(A == B) 
+      return d2(M, A);
+    auto AB_ = B - A;
+    auto u   = *AB_;
+    auto AH = (M - A) * u;
+    if(AH < 0) 
+      return std::numeric_limits<double>::max();
+    auto AH_ = u * AH;
+    auto H   = A + AH_;
+    auto BH_ = H - B;
+    if(BH_ * u > 0) 
+      return std::numeric_limits<double>::max();
+    return d2(M, H);
+  }
+
+  inline double cylinder_d(const Point& M, const std::pair<Point, Point>& S) {
+    return std::sqrt(cylinder_d2(M, S));
   }
 }
