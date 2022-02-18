@@ -22,6 +22,7 @@ int main(int argc, char* argv[]) {
   auto webcam_distribution = demo2d::opencv::sample::webcam(video_data);
 
   auto input_size  = video_data.image.size();
+  // This frame converts video image pixel positions to mathematical coordinates.
   video_data.frame = demo2d::opencv::direct_orthonormal_frame(input_size, .5*input_size.width, true);
 
   cv::namedWindow("webcam", cv::WINDOW_AUTOSIZE);
