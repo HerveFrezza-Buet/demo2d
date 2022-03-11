@@ -290,7 +290,7 @@ namespace demo2d {
 
   /**
    * This returns the distance between M and the segment S, but only
-   * if M lies in a rectange of which S is a median. It returns
+   * if M lies in a rectangle of which S is a median. It returns
    * infinity otherwise.
    */
   inline double cylinder_d2(const Point& M, const std::pair<Point, Point>& S) {
