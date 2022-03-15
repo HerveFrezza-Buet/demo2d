@@ -17,7 +17,9 @@ int main(int argc, char* argv[]) {
   int N_slider =  5000;
   int T_slider =   127;
 
-  auto video_data = demo2d::opencv::sample::video_data(video_id, [&T_slider](const unsigned char* rgb_pixel) {if(rgb_pixel[1] < (unsigned char)(T_slider)) return 1.; else return 0.;});
+  auto video_data = demo2d::opencv::sample::video_data(video_id,
+						       [&T_slider](const unsigned char* rgb_pixel) {if(rgb_pixel[1] < (unsigned char)(T_slider)) return 1.; else return 0.;},
+						       true); // toggles mirror flipping.
 
   auto webcam_distribution = demo2d::opencv::sample::webcam(video_data);
 

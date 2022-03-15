@@ -618,6 +618,7 @@ namespace demo2d {
 
       struct VideoData : ImageData {
 	cv::VideoCapture cap;
+	bool flipped = false;
 	  
 	VideoData()                            = default;
 	VideoData(const VideoData&)            = default;
@@ -626,7 +627,7 @@ namespace demo2d {
 	VideoData& operator=(VideoData&&)      = default;
 	  
 	template<typename PIXEL_TO_DENSITY>
-	VideoData(int device, const PIXEL_TO_DENSITY& pixel_to_density) : ImageData(pixel_to_density), cap(device) {
+	VideoData(int device, const PIXEL_TO_DENSITY& pixel_to_density, bool flipped) : ImageData(pixel_to_density), cap(device), flipped(flipped) {
 	  if(!cap.isOpened()) {
 	    std::ostringstream ostr;
 	    ostr << "Cannot open video from device " << device << " (/dev/video" << device << ").";
@@ -642,6 +643,10 @@ namespace demo2d {
 	 */
 	void operator++() {
 	  cap >> image;
+	  if(flipped) 
+	    cv::flip(image, image, 1);
+	  
+		     
 	}
       };
 	
@@ -651,8 +656,8 @@ namespace demo2d {
        * distribution for storing all the required information.
        */
       template<typename PIXEL_TO_DENSITY>
-      VideoData video_data(int device, const PIXEL_TO_DENSITY& pixel_to_density) {
-	return VideoData(device, pixel_to_density);
+      VideoData video_data(int device, const PIXEL_TO_DENSITY& pixel_to_density, bool flipped=false) {
+	return VideoData(device, pixel_to_density, flipped);
       }
 	
 
