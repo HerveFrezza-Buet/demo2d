@@ -45,6 +45,7 @@
    @example example-000-001-opencv-frames.cpp
    @example example-001-001-sampling-basics.cpp
    @example example-001-002-dynamic-distribution.cpp
-   @example example-001-003-video-distribution.cpp
-   @example example-001-004-base-samplers.cpp
+   @example example-001-003-image-distribution.cpp
+   @example example-001-004-video-distribution.cpp
+   @example example-002-001-base-samplers.cpp
 */
