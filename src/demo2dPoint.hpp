@@ -217,6 +217,15 @@ namespace demo2d {
   inline double d(const Point& A, const Point& B) {
     return std::sqrt(d2(A,B));
   }
+  
+  inline double d2_point(const Point& A, const Point& B) {
+    return d2(A, B);
+  }
+  
+  inline double d_point(const Point& A, const Point& B) {
+    return d(A, B);
+  }
+
 
   inline Point min(const Point& A, const Point& B) {
     return {std::min(A.x,B.x),std::min(A.y,B.y)};
@@ -287,6 +296,16 @@ namespace demo2d {
   inline double d(const Point& M, const std::pair<Point, Point>& S) {
     return std::sqrt(d2(M, S));
   }
+
+  inline double d2_point_segment(const Point& M, const std::pair<Point, Point>& S) {
+    return d2(M, S);
+  }
+
+  inline double d_point_segment(const Point& M, const std::pair<Point, Point>& S) {
+    return d(M, S);
+  }
+    
+  
 
   /**
    * This returns the distance between M and the segment S, but only
