@@ -781,5 +781,25 @@ namespace demo2d {
     inline density operator||(density op1, density op2) {
       return density(new Union(op1, op2));
     }
+
+    
+    class Ref : public Density {
+    private:
+
+      const demo2d::sample::density& current;
+
+      Ref(const demo2d::sample::density& current) : current(current) {}
+
+	
+      virtual BBox bbox() const override {
+	return current->bbox();
+      }
+	
+      virtual double operator()(const Point& p) const override {
+	return (*current)(p);
+      }
+    };
+
+    density ref(const demo2d::sample::density& current) {return density(new Ref(current));}
   }
 }
