@@ -784,7 +784,7 @@ namespace demo2d {
 
     
     class Ref : public Density {
-    private:
+    public:
 
       const demo2d::sample::density& current;
 
