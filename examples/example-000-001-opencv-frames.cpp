@@ -87,13 +87,13 @@ int main(int argc, char* argv[]) {
   
 
 
-  // Here, the frame is such as mathematical (0,0) is at the center of
+  // Here, the frame %is such as mathematical (0,0) is at the center of
   // the image. The length 1 in the mathematical frame corresponds to
   // .5*img_height pixels in the image.
   
   std::vector<std::string> windows {
     "direct orthonormal centered",
-    "direct orthonormal not centered"
+    "direct orthonormal not centered",
     "direct orthonormal bbox",
     "direct orthogonal",
     "Frame"};
@@ -102,6 +102,7 @@ int main(int argc, char* argv[]) {
   
   // We create a gui with a first window...
   auto gui = demo2d::opencv::gui(*win_it++, demo2d::opencv::direct_orthonormal_frame(cv::Size(img_width, img_height), .5*img_height, true));
+  gui += {cv::EVENT_LBUTTONDOWN, click_cb};
   // ...and then we add new widows with their specific frames.
   
   // This is same as previously, except that mathematical (0,0) is at
