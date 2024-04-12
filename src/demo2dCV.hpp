@@ -52,6 +52,10 @@
   
 namespace demo2d {
   namespace opencv {
+
+
+
+    
       
     class HueSelector {
     private:
@@ -684,7 +688,7 @@ namespace demo2d {
 	  
 	virtual demo2d::sample::BBox bbox() const override {
 	  return demo2d::sample::BBox(image_data.frame(cv::Point(0, image_data.image.size().height - 1)),
-					   image_data.frame(cv::Point(image_data.image.size().width - 1, 0)));
+				      image_data.frame(cv::Point(image_data.image.size().width - 1, 0)));
 	}
 	  
 	virtual double operator()(const Point& p) const override {
@@ -747,5 +751,91 @@ namespace demo2d {
       }
     }
 
+    struct gui {
+    private:
+
+      std::map<std::string, // window name
+	       std::map<int, // button
+			std::vector<std::function<void (const demo2d::Point&)>> // callbacks
+			>> mouse_callbacks;
+      std::list<std::function<void (double)>> slider_callbacks; // List mandatory here, we need pushback to preserve element addresses.
+      std::map<int, std::vector<std::function<void ()>>> keyboard_callbacks;
+	
+      static void on_mouse(int event, int x, int y, int, void* user_data) {
+	auto win_that_ptr = reinterpret_cast<std::pair<std::string, gui*>*>(user_data);
+	win_that_ptr->second->on_click(event, win_that_ptr->second->frame(cv::Point(x, y)), win_that_ptr->first);
+      }
+	
+      static void on_trackbar(int slider, void* user_data) {
+	(*(reinterpret_cast<std::function<void (double)>*>(user_data)))(slider*.001);
+      }
+
+      void on_click(int event, const demo2d::Point& pos, const std::string& win_name) {
+	auto& cbs = mouse_callbacks[win_name];
+	if(auto it = cbs.find(event); it != cbs.end())
+	  for(auto& cb : it->second) cb(pos);
+      }
+	
+	
+      std::string window_name;
+      std::set<std::string> windows_names;
+
+      std::list<std::pair<std::string, gui*>> cb_userdata; // Do not use vector here !
+	
+    public:
+	
+      const demo2d::opencv::Frame& frame;
+      int loop_ms = 0;
+      mutable int keycode = 0;
+	
+      gui() = delete;
+      gui(const gui&) = delete;
+      gui& operator=(const gui&) = delete;
+
+      gui(const std::string& window_name,
+	  const demo2d::opencv::Frame& frame)
+	: window_name(window_name), windows_names(), frame(frame) {
+
+	(*this)[window_name];
+      }
+
+      gui& operator[](const std::string& window_name) {
+	this->window_name = window_name;
+	if(windows_names.find(window_name) == windows_names.end()) {
+	  cv::namedWindow(window_name, cv::WINDOW_AUTOSIZE);
+	  auto& user_data = cb_userdata.emplace_back(window_name, this);
+	  cv::setMouseCallback(window_name, on_mouse, reinterpret_cast<void*>(&user_data));
+	}
+	    
+	return *this;
+      }
+
+      operator bool() const {
+	keycode = cv::waitKey(loop_ms) & 0xFF;
+	if(auto it = keyboard_callbacks.find(keycode); it != keyboard_callbacks.end())
+	  for(auto& cb : it->second)
+	    cb();
+	return keycode != 27; // ESC stops.
+      }
+
+      void operator<<(cv::Mat image) {
+	cv::imshow(window_name, image);
+      }
+	
+      void operator+=(const std::tuple<int, std::function<void (const demo2d::Point&)>>& click_info) {
+	mouse_callbacks[window_name][std::get<0>(click_info)].emplace_back(std::get<1>(click_info));
+      }
+	
+      void operator+=(const std::tuple<int, std::function<void ()>>& keyboard_info) {
+	keyboard_callbacks[std::get<0>(keyboard_info)].emplace_back(std::get<1>(keyboard_info));
+      }
+	
+      void operator+=(const std::tuple<std::string, std::function<void (double)>>& trackbar_info) {
+	cv::createTrackbar(std::get<0>(trackbar_info),
+			   window_name,
+			   nullptr, 1000, on_trackbar,
+			   (void*)&slider_callbacks.emplace_back(std::get<1>(trackbar_info)));
+      }
+    };
   }
 }

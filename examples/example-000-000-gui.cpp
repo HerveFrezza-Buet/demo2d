@@ -2,8 +2,6 @@
 #include <opencv2/opencv.hpp>
 
 
-#include <demo2d.hpp>
-#include <gui.hpp>
 
 int main(int argc, char* argv[]) {
 
@@ -66,7 +64,7 @@ int main(int argc, char* argv[]) {
   // Last let us add a keyboard event. Note that hitting ESC will
   // exit. Here, the space key (32) puts the dot at the origin.
   
-  gui += {32, [&dot_pos](){dot_pos = {0. 0.};}};
+  gui += {32, [&dot_pos](){dot_pos = {0., 0.};}};
 
   gui.loop_ms = 100; // We loop every 100ms (0 means wait the hit of a key for next iteration).
   while(gui) {
