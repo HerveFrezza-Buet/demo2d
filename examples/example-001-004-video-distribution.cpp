@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
   std::random_device rd;  
   std::mt19937 random_device(rd());
   
-  int N_slider =  5000;
+  double N_slider =  5000;
   int T_slider =   127;
 
   auto video_data = demo2d::opencv::sample::video_data(video_id,
@@ -27,15 +27,15 @@ int main(int argc, char* argv[]) {
   // This frame converts video image pixel positions to mathematical coordinates.
   video_data.frame = demo2d::opencv::direct_orthonormal_frame(input_size, .5*input_size.width, true);
 
-  cv::namedWindow("webcam", cv::WINDOW_AUTOSIZE);
+  std::string image {"image"};
+  std::string webcam {"image source"};
+  auto gui = demo2d::opencv::gui(webcam, video_data.frame);
+  gui[image] += {"nb/m^2", [&N_slider](double slider_value){N_slider = 50000 * slider_value;}};
+  gui[image] += {"threshold", [&T_slider](double slider_value){T_slider = 255 * slider_value;}};
   
-  cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
-  cv::createTrackbar("nb/m^2", "image", &N_slider, 50000, nullptr);
-  cv::createTrackbar("threshold", "image", &T_slider, 255, nullptr);
-  
-  auto image       = cv::Mat(300, 400, CV_8UC3, cv::Scalar(255,255,255));
-  auto frame       = demo2d::opencv::direct_orthonormal_frame(image.size(), .4*image.size().width, true);
-  auto dd          = demo2d::opencv::dot_drawer<demo2d::Point>(image, frame,
+  auto img       = cv::Mat(300, 400, CV_8UC3, cv::Scalar(255,255,255));
+  auto frame       = demo2d::opencv::direct_orthonormal_frame(img.size(), .4*img.size().width, true);
+  auto dd          = demo2d::opencv::dot_drawer<demo2d::Point>(img, frame,
 									 [](const demo2d::Point& pt) {return                      true;},
 									 [](const demo2d::Point& pt) {return                        pt;},
 									 [](const demo2d::Point& pt) {return                         1;},
@@ -54,16 +54,14 @@ int main(int argc, char* argv[]) {
   
   auto sampler = demo2d::sample::base_sampler::random(random_device, N_slider);
   
-  int keycode = 0;
-  while(keycode != 27) {
-    ++video_data; // get next frame.
+  gui.loop_ms = 1;
+  while(gui) {
     sampler = N_slider;
     auto S  = demo2d::sample::sample_set(random_device, sampler, webcam_distribution);
-    image = cv::Scalar(255, 255, 255);
+    img = cv::Scalar(255, 255, 255);
     std::copy(S.begin(), S.end(), dd);
-    cv::imshow("image", image);
-    cv::imshow("webcam", video_data.image);
-    keycode = cv::waitKey(1) & 0xFF;
+    gui[image] << img;
+    gui[webcam] << video_data.image;
   }
   
   return 0;

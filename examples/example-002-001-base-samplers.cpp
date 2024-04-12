@@ -52,11 +52,10 @@ int main(int argc, char* argv[]) {
 								   [](const demo2d::Point& pt) {return cv::Scalar(250, 50, 50);},
 								   [](const demo2d::Point& pt) {return                      -1;});
 
-  cv::namedWindow("random",    cv::WINDOW_AUTOSIZE);
-  cv::namedWindow("grid",      cv::WINDOW_AUTOSIZE);
-  cv::namedWindow("triangles", cv::WINDOW_AUTOSIZE);
-  
-  int keycode = 0;
+  std::string random {"random"};
+  std::string grid {"grid"};
+  std::string triangles {"triangles"};
+  auto gui = demo2d::opencv::gui(random, frame);
  
   std::cout << std::endl
 	    << std::endl
@@ -73,27 +72,26 @@ int main(int argc, char* argv[]) {
   auto sampler_triangles = demo2d::sample::base_sampler::triangles(random_device, NB_SAMPLES_PER_M2);
 
   bool rotate = true;
-  while(keycode != 27) {
+  gui += {32, [&rotate](){rotate = !rotate;}};
+
+  gui.loop_ms = 1;
+  while(gui) {
     
     image = cv::Scalar(255,255,255);
     auto S1 = demo2d::sample::sample_set(random_device, sampler_random, density);
     std::copy(S1.begin(), S1.end(), dd);
-    cv::imshow("random", image);
+    gui[random] << image;
     
     image = cv::Scalar(255,255,255);
     auto S2 = demo2d::sample::sample_set(random_device, sampler_grid, density);
     std::copy(S2.begin(), S2.end(), dd);
-    cv::imshow("grid", image);
+    gui[grid] << image;
     
     image = cv::Scalar(255,255,255);
     auto S3 = demo2d::sample::sample_set(random_device, sampler_triangles, density);
     std::copy(S3.begin(), S3.end(), dd);
-    cv::imshow("triangles", image);
+    gui[triangles] << image;
 
-    
-    keycode = cv::waitKey(10) & 0xFF;
-    if(keycode == 32)
-      rotate = ! rotate;
     if(rotate) ++theta;
   }
 

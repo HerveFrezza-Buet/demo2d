@@ -69,23 +69,22 @@ int main(int argc, char* argv[]) {
 								   [](const demo2d::Point& pt) {return cv::Scalar(250, 50, 50);},
 								   [](const demo2d::Point& pt) {return                      -1;});
 
-  cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
+  auto gui = demo2d::opencv::gui("image", frame);
+  gui.loop_ms = 10;
   cv::VideoWriter video("movie.avi", cv::VideoWriter::fourcc('D', 'I', 'V', 'X'), 25, image.size());
 
   std::cout << std::endl
-	    << "The window will close automatically after a while. Please wait." << std::endl
+	    << "The window will close automatically after a while (or ESC hit). Please wait." << std::endl
 	    << std::endl;
 
   auto sampler = demo2d::sample::base_sampler::random(random_device, NB_SAMPLES_PER_M2);
-  for(unsigned int frame = 0; frame < 500; ++frame) {
+  for(unsigned int frame = 0; frame < 500 && gui; ++frame) {
     image = cv::Scalar(255,255,255);
     
     auto S = demo2d::sample::sample_set(random_device, sampler, density);
     std::copy(S.begin(), S.end(), dd);
     
-    cv::imshow("image", image);
-    cv::waitKey(40);
-
+    gui   << image;
     video << image;
 
     // update variable parameters
