@@ -16,20 +16,12 @@
 
 struct Drawing {
   cv::Mat image;
-  std::string title;
-  demo2d::opencv::Frame frame;
   std::vector<demo2d::Point> house;
-  demo2d::Point& click_pos;
+  demo2d::Point click_pos;
   
-  Drawing(unsigned int image_width,
-	  unsigned int image_height,
-	  demo2d::Point& click_pos,
-	  const std::string& title,
-	  const demo2d::opencv::Frame& frame)
+  Drawing(unsigned int image_width,  unsigned int image_height)
     : image(image_height, image_width, CV_8UC3, cv::Scalar(255,255,255)),
-      title(title),
-      frame(frame),
-      click_pos(click_pos) {
+      click_pos(0., 0) {
     auto out = std::back_inserter(house);
     *(out++) = {+HOUSE_RADIUS, -HOUSE_RADIUS};
     *(out++) = {-HOUSE_RADIUS, +HOUSE_RADIUS};
@@ -42,7 +34,7 @@ struct Drawing {
     *(out++) = {-HOUSE_RADIUS, -HOUSE_RADIUS};
   }
 
-  void draw() {
+  auto draw(const demo2d::opencv::Frame& frame) {
     // The frame transforms mathematical points a pixel positions on
     // the image.
     
@@ -61,20 +53,10 @@ struct Drawing {
 
     cv::circle(image, frame(click_pos), 5, cv::Scalar(0, 255, 0), -1);
 
-    cv::imshow(title, image);
-  }
-
-  void click(int x, int y) {
-    // From a pixel position, the frame gives the corresponding point
-    // in the mathematical frame.
-    click_pos = frame(cv::Point(x, y));
+    return image;
   }
 };
 
-void on_mouse( int event, int x, int y, int, void* user_data) {
-  auto& drawing = *(reinterpret_cast<Drawing*>(user_data));
-  drawing.click(x, y);
-}
     
 
 int main(int argc, char* argv[]) {
@@ -86,12 +68,8 @@ int main(int argc, char* argv[]) {
 
   unsigned int img_width  = std::atoi(argv[1]);
   unsigned int img_height = std::atoi(argv[2]);
-
-  demo2d::Point click_pos(0,0);
   
-  std::vector<Drawing> drawings;
-  auto out = std::back_inserter(drawings);
-
+  Drawing drawing(img_width, img_height);
 
   // We draw a "house" made of a square with a triangle (roof) on the
   // top of it. The square side is 1, its center is (0,0). The drawing
@@ -108,63 +86,56 @@ int main(int argc, char* argv[]) {
   // origin) is displayed on the image.
   
 
+
   // Here, the frame is such as mathematical (0,0) is at the center of
   // the image. The length 1 in the mathematical frame corresponds to
-  // .5*img_height pixels in the image. 
-  *(out++) = Drawing(img_width, img_height, click_pos,
-		     "direct orthonormal centered",
-		     demo2d::opencv::direct_orthonormal_frame(cv::Size(img_width, img_height),
-							      .5*img_height,
-							      true));
+  // .5*img_height pixels in the image.
+  
+  std::vector<std::string> windows {
+    "direct orthonormal centered",
+    "direct orthonormal not centered"
+    "direct orthonormal bbox",
+    "direct orthogonal",
+    "Frame"};
+  auto win_it = windows.begin();
+  auto click_cb = [&drawing](const demo2d::Point& click_location){drawing.click_pos = click_location;};
+  
+  // We create a gui with a first window...
+  auto gui = demo2d::opencv::gui(*win_it++, demo2d::opencv::direct_orthonormal_frame(cv::Size(img_width, img_height), .5*img_height, true));
+  // ...and then we add new widows with their specific frames.
   
   // This is same as previously, except that mathematical (0,0) is at
   // the bottom left pixel of the image.
-  *(out++) = Drawing(img_width, img_height, click_pos,
-		     "direct orthonormal not centered",
-		     demo2d::opencv::direct_orthonormal_frame(cv::Size(img_width, img_height),
-							      .5*img_height,
-							      false));
+  gui[*win_it++] = demo2d::opencv::direct_orthonormal_frame(cv::Size(img_width, img_height), .5*img_height, false);
+  gui += {cv::EVENT_LBUTTONDOWN, click_cb};
 
-  // This frame is such as the bounding box in the mathematical frame
+  // This frame isœ such as the bounding box in the mathematical frame
   // fits the image (leaving a border margin), keeping the aspect
   // ration.
-  *(out++) = Drawing(img_width, img_height, click_pos,
-		     "direct orthonormal bbox",
-		     demo2d::opencv::direct_orthonormal_frame(cv::Size(img_width, img_height),
-							      demo2d::sample::BBox({-HOUSE_RADIUS, HOUSE_RADIUS}, {0, HOUSE_ROOF}),
-							      PIXEL_MARGIN));
-
+  gui[*win_it++] = demo2d::opencv::direct_orthonormal_frame(cv::Size(img_width, img_height),
+									    demo2d::sample::BBox({-HOUSE_RADIUS, HOUSE_RADIUS}, {0, HOUSE_ROOF}),
+									    PIXEL_MARGIN);
+  gui += {cv::EVENT_LBUTTONDOWN, click_cb};
+  
   // The origin of the mathematical frame, here, is at pixel (200,
   // 400). The length of the x unit vector is 200, the length of the y
   // unit vector is 50.
-  *(out++) = Drawing(img_width, img_height, click_pos,
-		     "direct orthogonal",
-		     demo2d::opencv::direct_orthogonal_frame(200,
-							     50,
-							     {200, 400}));
+  gui[*win_it++] = demo2d::opencv::direct_orthogonal_frame(200, 50, {200, 400});
+  gui += {cv::EVENT_LBUTTONDOWN, click_cb};
+  
   // The origin of the mathematical frame is at pixel (200, 100). The
   // x unit vector of the mathematical frame is transformed into a
   // vector (200, -50) in the image frame. The y unit vector of the
   // mathematical frame is transformed into a vector (30, 120) in the
   // image frame.
-  *(out++) = Drawing(img_width, img_height, click_pos,
-		     "Frame",
-		     demo2d::opencv::Frame({200, 100},
-					   {100, -50},
-					   { 30, 120}));
-		     
+  gui[*win_it++] = demo2d::opencv::Frame({200, 100}, {100, -50}, { 30, 120});
+  gui += {cv::EVENT_LBUTTONDOWN, click_cb};
 
-  for(auto& drawing : drawings) {
-    cv::namedWindow(drawing.title, cv::WINDOW_AUTOSIZE);
-    cv::setMouseCallback(drawing.title, on_mouse, reinterpret_cast<void*>(&drawing));
-  }
-
-  int keycode = 0;
-  while(keycode != 27) {
-    for(auto& drawing : drawings)
-      drawing.draw();
-    keycode = cv::waitKey(10) & 0xFF;
-  }
+    
+  gui.loop_ms = 100;
+  while(gui)
+    for(auto& window_name : windows)
+      gui << drawing.draw(gui[window_name].frame());
   
   return 0;
 }

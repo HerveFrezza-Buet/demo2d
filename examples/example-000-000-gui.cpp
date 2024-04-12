@@ -51,7 +51,17 @@ int main(int argc, char* argv[]) {
   // Let us add another mouse event to the auxiliary window.
   // A call of gui["name"] tells that we work until next call with the window "name" (if not already existing, the window is created).
   // The expression gui["name"] can be used as gui
+  // Each window has its associated frame, and a newly created windo has the same frame as the current one.
   gui[auxiliary_window] += {cv::EVENT_LBUTTONDOWN, [&rgb_pos](const demo2d::Point& click_location){rgb_pos = click_location;}};
+
+  // You can set/change the frame associated to a window like this...
+  gui = frame; // for auxiliary_window due to the previous line
+  // ... or like this explicitly.
+  gui[auxiliary_window] = frame;
+
+  // You can get the frame associated to the current_window (useless
+  // here, since it is the variable frame for both).
+  auto current_frame = gui.frame();
   
   // These are slider events. The slider_value is in [0, 1], according to the slider position.
   

@@ -763,7 +763,10 @@ namespace demo2d {
 	
       static void on_mouse(int event, int x, int y, int, void* user_data) {
 	auto win_that_ptr = reinterpret_cast<std::pair<std::string, gui*>*>(user_data);
-	win_that_ptr->second->on_click(event, win_that_ptr->second->frame(cv::Point(x, y)), win_that_ptr->first);
+	auto that = win_that_ptr->second;
+	auto& window_name = win_that_ptr->first;
+	auto& frame = that->frames[window_name];
+	that->on_click(event, frame(cv::Point(x, y)), window_name);
       }
 	
       static void on_trackbar(int slider, void* user_data) {
@@ -778,13 +781,13 @@ namespace demo2d {
 	
 	
       std::string window_name;
-      std::set<std::string> windows_names;
+      std::map<std::string, Frame> frames;
+      Frame the_frame;
 
       std::list<std::pair<std::string, gui*>> cb_userdata; // Do not use vector here !
 	
     public:
 	
-      const demo2d::opencv::Frame& frame;
       int loop_ms = 0;
       mutable int keycode = 0;
 	
@@ -793,20 +796,30 @@ namespace demo2d {
       gui& operator=(const gui&) = delete;
 
       gui(const std::string& window_name,
-	  const demo2d::opencv::Frame& frame)
-	: window_name(window_name), windows_names(), frame(frame) {
+	  const Frame& frame)
+	: window_name(window_name), frames(), the_frame(frame) {
 
 	(*this)[window_name];
+	frames.emplace(window_name, frame);
       }
 
+      gui& operator=(const Frame& frame) {
+	frames[window_name] = frame;
+	this->the_frame = frame;
+	return *this;
+      }
+
+      const Frame& frame() const {return the_frame;}
+      
       gui& operator[](const std::string& window_name) {
 	this->window_name = window_name;
-	if(windows_names.find(window_name) == windows_names.end()) {
+	if(frames.find(window_name) == frames.end()) {
 	  cv::namedWindow(window_name, cv::WINDOW_AUTOSIZE);
 	  auto& user_data = cb_userdata.emplace_back(window_name, this);
+	  frames.emplace(window_name, the_frame);
 	  cv::setMouseCallback(window_name, on_mouse, reinterpret_cast<void*>(&user_data));
 	}
-	    
+	the_frame = frames[window_name];
 	return *this;
       }
 

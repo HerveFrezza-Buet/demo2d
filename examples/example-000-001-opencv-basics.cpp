@@ -79,10 +79,12 @@ int main(int argc, char* argv[]) {
 
   // Let us display the result.
   cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
+  auto gui = demo2d::opencv::gui("image", frame);
+  gui.loop_ms = 0;
   
   cv::imwrite(filename(37), image); // writes img-000037.png
-  cv::imshow ("image",      image);
-  cv::waitKey(0);
+  gui << image;
+  if(gui);
   
   image = color_b;
   auto dd = demo2d::opencv::segment_drawer<double>(image, frame,
@@ -95,8 +97,8 @@ int main(int argc, char* argv[]) {
   std::copy(abscissas.begin(), abscissas.end(), dd);
 
   cv::imwrite(filename(), image); // writes img-000038.png
-  cv::imshow ("image",    image);
-  cv::waitKey(0);
+  gui << image;
+  if(gui);
 
   return 0;
 }
