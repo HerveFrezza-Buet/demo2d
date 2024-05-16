@@ -41,6 +41,7 @@
 
 
 /**
+   @example example-000-000-gui.cpp
    @example example-000-001-opencv-basics.cpp
    @example example-000-001-opencv-frames.cpp
    @example example-001-001-sampling-basics.cpp
