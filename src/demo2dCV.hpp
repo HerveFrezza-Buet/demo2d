@@ -760,7 +760,7 @@ namespace demo2d {
 			>> mouse_callbacks;
       std::list<std::function<void (double)>> slider_callbacks; // List mandatory here, we need pushback to preserve element addresses.
       std::map<int, std::vector<std::function<void ()>>> keyboard_callbacks;
-	
+      
       static void on_mouse(int event, int x, int y, int, void* user_data) {
 	auto win_that_ptr = reinterpret_cast<std::pair<std::string, gui*>*>(user_data);
 	auto that = win_that_ptr->second;
@@ -797,7 +797,7 @@ namespace demo2d {
 
       gui(const std::string& window_name,
 	  const Frame& frame)
-	: window_name(window_name), frames(), the_frame(frame) {
+	: mouse_callbacks(), slider_callbacks(), keyboard_callbacks(), window_name(window_name), frames(), the_frame(frame), cb_userdata() {
 
 	(*this)[window_name];
 	frames.emplace(window_name, frame);
