@@ -28,6 +28,8 @@ int main(int argc, char* argv[]) {
 
   double bar_width  = SIZE+THICKNESS;
   double bar_height = THICKNESS;
+  
+  double data_radius = SIZE*1.2;
 
   demo2d::Point o_left  = {-1.25*SIZE,    0};
   demo2d::Point o_right = {-0.75*SIZE,    0};
@@ -39,6 +41,7 @@ int main(int argc, char* argv[]) {
   auto bar   = demo2d::sample::rectangle(bar_width, bar_height, fill_1);
   auto disk  = demo2d::sample::disk(radius_1, fill_1);
   auto hole  = demo2d::sample::disk(radius_2, fill_1);
+  auto data  = demo2d::sample::disk(data_radius, fill_1);
 
   auto density = (left || right || bar || ((disk - hole) + h)) % theta();
   
@@ -52,9 +55,10 @@ int main(int argc, char* argv[]) {
 								   [](const demo2d::Point& pt) {return cv::Scalar(250, 50, 50);},
 								   [](const demo2d::Point& pt) {return                      -1;});
 
-  std::string random {"random"};
-  std::string grid {"grid"};
+  std::string random    {"random"};
+  std::string grid      {"grid"};
   std::string triangles {"triangles"};
+  std::string from_data {"from data"};
   auto gui = demo2d::opencv::gui(random, frame);
  
   std::cout << std::endl
@@ -70,6 +74,12 @@ int main(int argc, char* argv[]) {
   auto sampler_random    = demo2d::sample::base_sampler::random   (random_device, NB_SAMPLES_PER_M2);
   auto sampler_grid      = demo2d::sample::base_sampler::grid     (random_device, NB_SAMPLES_PER_M2);
   auto sampler_triangles = demo2d::sample::base_sampler::triangles(random_device, NB_SAMPLES_PER_M2);
+
+  
+  auto D = demo2d::sample::sample_set(random_device, sampler_random, data);
+  std::vector<demo2d::Point> dataset;
+  std::copy(D.begin(), D.end(), std::back_inserter(dataset));
+  auto sampler_from_data = demo2d::sample::base_sampler::from_data(dataset.begin(), dataset.end());
 
   bool rotate = true;
   gui += {32, [&rotate](){rotate = !rotate;}};
@@ -91,6 +101,11 @@ int main(int argc, char* argv[]) {
     auto S3 = demo2d::sample::sample_set(random_device, sampler_triangles, density);
     std::copy(S3.begin(), S3.end(), dd);
     gui[triangles] << image;
+    
+    image = cv::Scalar(255,255,255);
+    auto S4 = demo2d::sample::sample_set(random_device, sampler_from_data, density);
+    std::copy(S4.begin(), S4.end(), dd);
+    gui[from_data] << image;
 
     if(rotate) ++theta;
   }

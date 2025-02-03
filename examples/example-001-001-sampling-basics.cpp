@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
 
   auto crown      = (demo2d::sample::disk(crown_radius, crown_density) - demo2d::sample::disk(crown_hole_radius, crown_density)) * crown_scale;
   auto grad       = (demo2d::sample::custom(demo2d::sample::BBox(0,0,1,1),
-						 [](const demo2d::Point& p) {return p.y;}) + grad_offset) * grad_scale;
+					    [](const demo2d::Point& p) {return p.y;}) + grad_offset) * grad_scale;
   auto obj3       = (crown && grad) + crown_pos;
 
   auto density    =  obj1 || obj2 || obj3;
@@ -69,11 +69,11 @@ int main(int argc, char* argv[]) {
   auto image = cv::Mat(480, 640, CV_8UC3, cv::Scalar(255,255,255));
   auto frame = demo2d::opencv::direct_orthonormal_frame(image.size(), image.size().width*.5, true);
   auto dd    = demo2d::opencv::dot_drawer<demo2d::Point>(image, frame,
-								   do_we_draw,
-								   point_of,
-								   radius_of,
-								   [](const demo2d::Point& pt) {return cv::Scalar(200, 50, 50);},
-								   thickness_of);
+							 do_we_draw,
+							 point_of,
+							 radius_of,
+							 [](const demo2d::Point& pt) {return cv::Scalar(200, 50, 50);},
+							 thickness_of);
   // sampler provide random samples in the main area. Here, they are obtained from an uniform toss.
   auto sampler = demo2d::sample::base_sampler::random(random_device, NB_SAMPLES_PER_M2);
   auto S       = demo2d::sample::sample_set(random_device, sampler, density);
@@ -87,11 +87,11 @@ int main(int argc, char* argv[]) {
   sampler    = NB_SAMPLES_PER_M2/2;
   auto SS    = demo2d::sample::sample_set(random_device,  sampler, density);
   dd         = demo2d::opencv::dot_drawer<demo2d::Point>(image, frame,
-								   do_we_draw,
-								   point_of,
-								   radius_of,
-								   [](const demo2d::Point& pt) {return cv::Scalar(50, 200, 200);},
-								   thickness_of);
+							 do_we_draw,
+							 point_of,
+							 radius_of,
+							 [](const demo2d::Point& pt) {return cv::Scalar(50, 200, 200);},
+							 thickness_of);
   std::copy(SS.begin(), SS.end(), dd);
   
   cv::namedWindow("image", cv::WINDOW_AUTOSIZE);

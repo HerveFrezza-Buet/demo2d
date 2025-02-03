@@ -325,7 +325,67 @@ namespace demo2d {
       template<typename RANDOM_DEVICE>
       auto triangles(RANDOM_DEVICE& rd, double nb_samples_per_m2) {return Triangles<RANDOM_DEVICE>(rd,nb_samples_per_m2);}
 	
+
+      
+      template<typename Iter, typename Sentinel>
+      class FromData {
+      private:
+
+	Iter begin;
+	Sentinel end;
 	
+      public:
+
+	class iterator {
+	private:
+
+	  friend class FromData<Iter, Sentinel>;
+	  BBox bbox;
+	  Iter current;
+	  Sentinel end;
+	    
+	  iterator(const BBox& bbox, Iter current, Sentinel end) : bbox(bbox), current(current), end(end) {}
+	    
+	public:
+	    
+	  using difference_type   = std::iter_difference_t<Iter>;
+	  using value_type        = std::iter_value_t<Iter>;
+	  using pointer           = std::iter_value_t<Iter>*;
+	  using reference         = std::iter_reference_t<Iter>;
+	  using iterator_category = std::forward_iterator_tag;
+
+	  iterator()                           = default;
+	  iterator(const iterator&)            = default;
+	  iterator& operator=(const iterator&) = default;
+	  
+	  iterator&  operator++()      {
+	    ++current;
+	    while((current != end) && !(bbox.contains(*current))) ++current;
+	    return *this;
+	  }
+	  
+	  iterator&  operator++(int)   {iterator res = *this; (*this)++; return res;}
+	  value_type operator*() const {return *current;}
+	  bool       operator==(const iterator& other) const {return current == other.current;}
+	  bool       operator!=(const iterator& other) const {return current != other.current;}
+	};
+	  
+	FromData(Iter begin, Sentinel end): begin(begin), end(end) {}
+	FromData()                         = delete;
+	FromData(const FromData&)            = delete;
+	FromData& operator=(const FromData&) = delete;
+
+	auto operator()(const BBox& bbox) const {
+	  return std::make_pair<iterator, iterator>(iterator(bbox, begin, end), iterator(bbox, end, end));
+	}
+      };
+
+      /**
+       * This samples a dataset.
+       */
+      template<typename Iter, typename Sentinel>
+      auto from_data(Iter begin, Sentinel end) {return FromData<Iter, Sentinel>(begin, end);}
+
     }
       
 
