@@ -860,6 +860,6 @@ namespace demo2d {
       }
     };
 
-    density ref(const demo2d::sample::density& current) {return density(new Ref(current));}
+    inline density ref(const demo2d::sample::density& current) {return density(new Ref(current));}
   }
 }
