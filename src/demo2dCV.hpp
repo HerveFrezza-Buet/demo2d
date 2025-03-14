@@ -52,10 +52,6 @@
   
 namespace demo2d {
   namespace opencv {
-
-
-
-    
       
     class HueSelector {
     private:
@@ -579,6 +575,64 @@ namespace demo2d {
 					 const COLOR_OF&     color_of,
 					 const THICKNESS_OF& thickness_of) {
       return SegmentDrawer<OBJECT>(image, frame, do_draw, points_of, color_of, thickness_of);
+    }
+
+
+    /**
+     * Draws the line such as ax + by + c = 0
+     */
+    void line(cv::Mat& image, Frame frame, const cv::Scalar& color, unsigned int thickness, double a, double b, double c) {
+      auto O  = frame(cv::Point(0, 0));
+      auto W  = frame(cv::Point(image.size().width, 0));
+      auto H  = frame(cv::Point(0, image.size().height));
+      auto WH = frame(cv::Point(image.size().width, image.size().height));
+      demo2d::Point ab {a, b};
+
+      std::array<demo2d::Point, 2> pts;
+      auto out = pts.begin();
+
+      double s; // s for sign
+      
+      int sO = 0;
+      int sW = 0;
+      int sWH = 0;
+      int sH = 0;
+      
+      s = O*ab + c;
+      if(s < 0)       sO = -1;
+      else if (s > 0) sO =  1;
+
+      s = W*ab + c;
+      if(s < 0)       sW = -1;
+      else if (s > 0) sW =  1;
+      
+      s = WH*ab + c;
+      if(s < 0)       sWH = -1;
+      else if (s > 0) sWH =  1;
+      
+      s = H*ab + c;
+      if(s < 0)       sH = -1;
+      else if (s > 0) sH =  1;
+      
+
+      if(sO != sW)
+	*(out++) = {(-c - O.y*b)/a, O.y};
+      
+      if(sW != sWH)
+	*(out++) = {W.x, (-c - a*W.x)/b};
+
+      if(out != pts.end() && sWH != sH) 
+	*(out++) = {(-c - H.y*b)/a, H.y};
+
+      if(out != pts.end() && sH != sO) 
+	*(out++) = {O.x, (-c - a*O.x)/b};
+      
+      if(out != pts.end())
+	return;
+
+      auto U = frame(pts[0]);
+      auto V = frame(pts[1]);
+      cv::line(image, U, V, color, thickness);
     }
 
 

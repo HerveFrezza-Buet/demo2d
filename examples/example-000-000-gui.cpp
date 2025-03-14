@@ -83,9 +83,12 @@ int main(int argc, char* argv[]) {
 
     // We use the frame to get opencv coordinates (cv::Point) from mathematical ones (demo2d::Point here).
     
-    // Let us draw the reference frame.
+    // Let us draw the reference frame. This consists of 2 lines.
+    // Let us draw the first one as a segment, directly in openCV coordinates.
     cv::line(image, frame(demo2d::Point( 0, -1)), frame(demo2d::Point(0, 1)), cv::Scalar(0, 0, 255), 1);
-    cv::line(image, frame(demo2d::Point(-1,  0)), frame(demo2d::Point(1, 0)), cv::Scalar(255, 0, 0), 1);
+    // Let us draw the second one from a mathematical equation ax+by+c=0, so here, a=0, b=1, c=0
+    demo2d::opencv::line(image, frame, cv::Scalar(255, 0, 0), 1,
+			 0, 1, 0); // a, b, c
     
     // This draws a green dot.
     cv::circle(image, frame(dot_pos), 10, color, -1);
