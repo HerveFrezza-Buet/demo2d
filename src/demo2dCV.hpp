@@ -581,7 +581,7 @@ namespace demo2d {
     /**
      * Draws the line such as ax + by + c = 0
      */
-    void line(cv::Mat& image, Frame frame, const cv::Scalar& color, unsigned int thickness, double a, double b, double c) {
+    inline void line(cv::Mat& image, Frame frame, const cv::Scalar& color, unsigned int thickness, double a, double b, double c) {
       auto O  = frame(cv::Point(0, 0));
       auto W  = frame(cv::Point(image.size().width, 0));
       auto H  = frame(cv::Point(0, image.size().height));
