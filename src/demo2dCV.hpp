@@ -579,13 +579,13 @@ namespace demo2d {
 
 
     /**
-     * Draws the line such as ax + by + c = 0
+     * Draws the line such as ax + by + c = 0 inside a bounding box.
      */
-    inline void line(cv::Mat& image, Frame frame, const cv::Scalar& color, unsigned int thickness, double a, double b, double c) {
-      auto O  = frame(cv::Point(0, 0));
-      auto W  = frame(cv::Point(image.size().width, 0));
-      auto H  = frame(cv::Point(0, image.size().height));
-      auto WH = frame(cv::Point(image.size().width, image.size().height));
+    inline void line(cv::Mat& image, Frame frame, const cv::Scalar& color, unsigned int thickness, const demo2d::sample::BBox& bbox, double a, double b, double c) {
+      auto O  = bbox.bottom_left();
+      auto W  = bbox.bottom_right();
+      auto H  = bbox.top_left();
+      auto WH = bbox.top_right();
       demo2d::Point ab {a, b};
 
       std::array<demo2d::Point, 2> pts;
@@ -636,6 +636,10 @@ namespace demo2d {
     }
 
 
+    inline void line(cv::Mat& image, Frame frame, const cv::Scalar& color, unsigned int thickness, double a, double b, double c) {
+      demo2d::sample::BBox bbox {frame(cv::Point(0, 0)), frame(cv::Point(image.size().width, image.size().height))};
+      line(image, frame, color, thickness, bbox, a, b, c);
+    }
 
     namespace sample {
 
