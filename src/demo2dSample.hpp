@@ -36,6 +36,7 @@
 #include <iostream>
 #include <tuple>
 #include <cmath>
+#include <numbers>
 
 namespace demo2d {
   namespace sample {
@@ -701,7 +702,7 @@ namespace demo2d {
       void check_angle() const{
 	if(t != theta) {
 	  t = theta;
-	  double t_rad = t*3.141592653589793238463/180.0;
+	  double t_rad = t*std::numbers::pi/180.0;
 	  ct = cos(t_rad);
 	  st = sin(t_rad);
 	}
