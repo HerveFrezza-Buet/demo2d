@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
   gui[*win_it++] = demo2d::opencv::direct_orthonormal_frame(cv::Size(img_width, img_height), .5*img_height, false);
   gui += {cv::EVENT_LBUTTONDOWN, click_cb};
 
-  // This frame isœ such as the bounding box in the mathematical frame
+  // This frame is such as the bounding box in the mathematical frame
   // fits the image (leaving a border margin), keeping the aspect
   // ration.
   gui[*win_it++] = demo2d::opencv::direct_orthonormal_frame(cv::Size(img_width, img_height),
